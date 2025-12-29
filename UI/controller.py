@@ -88,4 +88,24 @@ class Controller:
         self._view.update()
 
     def handle_percorso(self, e):
-        pass
+        squadra_code = self._view.dd_squadra.value
+        if squadra_code is None:
+            self._view.show_alert("Seleziona una squadra!")
+            return
+
+        path, peso_totale = self._model.getPercorsoMax(squadra_code)
+
+        self._view.txt_risultato.controls.clear()
+        self._view.txt_risultato.controls.append(ft.Text(f"Percorso ottimo trovato (Peso totale: {peso_totale}):"))
+
+
+        for i in range(len(path) - 1):
+            n1 = path[i]
+            n2 = path[i + 1]
+            peso_arco = self._model._grafo[n1][n2]['weight']
+            self._view.txt_risultato.controls.append(ft.Text(f"{n1.name} -> {n2.name} ({peso_arco})"))
+
+        if path:
+            self._view.txt_risultato.controls.append(ft.Text(f"Arrivo: {path[-1].name}"))
+
+        self._view.update()
