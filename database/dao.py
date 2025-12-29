@@ -34,18 +34,19 @@ class DAO:
             return result
 
         cursor = conn.cursor(dictionary=True)
-        # CORREZIONE: Usa SELECT * altrimenti Team(**row) fallisce
         query = """ SELECT * FROM team
         WHERE year = %s"""
 
         cursor.execute(query, (year,))
         for row in cursor:
-            team = Team(row['id'], row['year'], row['team_code'])
+            team = Team(row['id'], row['year'], row['team_code'], row['name'])
+            result.append(team)
         cursor.close()
         conn.close()
         return result
 
-    def getSalary(self, year):
+    @staticmethod
+    def getSalary(year):
         conn = DBConnect.get_connection()
         result = {}
         if conn is None:

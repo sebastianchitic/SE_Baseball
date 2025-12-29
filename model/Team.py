@@ -4,6 +4,7 @@ class Team:
     id : int
     year : int
     team_code : str
+    name : str
 
     def __str__(self):
         return f"{self.id} {self.year} {self.team_code}"
