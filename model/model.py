@@ -56,3 +56,52 @@ class Model:
 
         vicini.sort(key=lambda x: x[1], reverse=True)
         return vicini
+
+    def getPercorsoMax(self, team_code):
+        source_node = self._idMap.get(team_code)
+        if source_node is None:
+            return [], 0
+
+        self.percorsoMax = []
+        self.peso_Max = 0
+
+        parziale = [source_node]
+        self.ricorsione(parziale, 0, 9999999)
+
+        return self.percorsoMax, self.peso_Max
+
+
+    def ricorsione(self, parziale, peso_totale, ultimo_peso):
+        if peso_totale > self.peso_Max:
+            self._bestScore = peso_totale
+            self._bestPath = list(parziale)
+
+        last_node = parziale[-1]
+
+        vicini = self.getSortedNeighbors(last_node.team_code)
+
+        K = 3
+        vicini_k = vicini[:K]
+
+        for vicino, peso_arco in vicini_k:
+            if vicino not in parziale:
+                if peso_arco < ultimo_peso:
+                    parziale.append(vicino)
+                    self.ricorsione(parziale, peso_totale + peso_arco, peso_arco)
+
+                    parziale.pop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
