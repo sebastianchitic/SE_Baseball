@@ -10,10 +10,10 @@ class Controller:
     """ Altri possibili metodi per gestire di dd_anno """""
 
     def popolaDropdown(self):
-        years = self.model.get_all_years()
+        years = self._model.get_all_years()
         self._view.dd_anno.options.clear()
         for year in years:
-            self._view.dd_anno.options.append(ft.DropdownOption(year))
+            self._view.dd_anno.options.append(ft.DropdownOptionstr((year)))
         self._view.page.update()
 
     def handle_crea_grafo(self, e):
