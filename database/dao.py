@@ -1,20 +1,54 @@
 from database.DB_connect import DBConnect
+from model.Team import Team
 
 class DAO:
     @staticmethod
-    def query_esempio():
+    def getAllYears():
         conn = DBConnect.get_connection()
-
         result = []
-
         cursor = conn.cursor(dictionary=True)
-        query = """ SELECT * FROM esempio """
+        query = """ SELECT DISTINCT year
+         FROM team
+         WHERE year >= 1980
+         ORDER BY year DESC
+         """
 
         cursor.execute(query)
-
         for row in cursor:
-            result.append(row)
-
+            result.append(row['year'])
         cursor.close()
         conn.close()
         return result
+
+    @staticmethod
+    def getTeamsByYear(year):
+        conn = DBConnect.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """ SELECT team
+        FROM team
+        WHERE year = %s"""
+        cursor.execute(query, (year,))
+        result = []
+        for row in cursor:
+            result.append(Team(**row))
+        cursor.close()
+        conn.close()
+        return result
+
+    def getSalary(self, year):
+        conn = DBConnect.get_connection()
+        result = {}
+
+        cursor = conn.cursor(dictionary=True)
+        query = """ SELECT team_code, SUM(salary) as totsalary
+        FROM salary
+        WHERE year = %s
+        GROUP BY team_code"""
+        cursor.execute(query, (year,))
+        for row in cursor:
+            result[row['team_code']] = row['totsalary']
+        cursor.close()
+        conn.close()
+        return result
+
+
