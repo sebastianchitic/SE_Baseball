@@ -57,9 +57,9 @@ class Controller:
             self._view.show_alert("Inserire un numero valido")
             return
 
-        self._model.weighted_graph(anno)
+        self._model.buildGraph(anno)
 
-        n_nodi, n_archi = self._model.details()
+        n_nodi, n_archi = self._model.getGraphDetails()
 
         self._view.txt_risultato.controls.clear()
 
@@ -76,14 +76,14 @@ class Controller:
             self._view.show_alert("Seleziona una squadra dalla tendina!")
             return
 
-        vicini = self._model.get_SortedNeighbors(squadra_code)
+        vicini = self._model.getSortedNeighbors(squadra_code)
 
         # 3. Stampa dei risultati
         self._view.txt_risultato.controls.clear()
         self._view.txt_risultato.controls.append(ft.Text(f"Adiacenti alla squadra {squadra_code}:"))
 
         for vicino, peso in vicini:
-            self._view.txt_risultato.controls.append(ft.Text(f"{vicino.name} - {peso}"))
+            self._view.txt_risultato.controls.append(ft.Text(f"{vicino.name} - {round(peso)} $"))
 
         self._view.update()
 

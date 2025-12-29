@@ -34,7 +34,7 @@ class DAO:
             return result
 
         cursor = conn.cursor(dictionary=True)
-        query = """ SELECT *
+        query = """ SELECT ID as id, year, team_code, name
         FROM Team
         WHERE year = %s"""
 
