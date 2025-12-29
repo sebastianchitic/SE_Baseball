@@ -6,6 +6,8 @@ class Model:
     def get_all_years(self):
         return DAO.getAllYears()
 
+    def getTeamsByYear(anno):
+        return DAO.getTeamsByYear(anno)
 
 
 
