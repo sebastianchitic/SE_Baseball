@@ -3,16 +3,13 @@ from UI.alert import AlertManager
 
 class View:
     def __init__(self, page: ft.Page):
-        # Page
         self.page = page
         self.page.title = "SE_Baseball"
         self.page.horizontal_alignment = "center"
         self.page.theme_mode = ft.ThemeMode.DARK
 
-        # Alert
         self.alert = AlertManager(page)
 
-        # Controller
         self.controller = None
 
     def show_alert(self, messaggio):
@@ -25,11 +22,8 @@ class View:
         self.page.update()
 
     def load_interface(self):
-        """ Crea e aggiunge gli elementi di UI alla pagina e la aggiorna. """
-        # Intestazione
         self.txt_titolo = ft.Text(value="Gestione Squadre di Baseball", size=30, weight=ft.FontWeight.BOLD)
 
-        # Riga 1
         self.dd_anno = ft.Dropdown(label="Anno", width=200, alignment=ft.alignment.top_left, on_change=self.controller.read_anno)
 
         row1 = ft.Row([ft.Container(self.txt_titolo, width=500),
@@ -37,7 +31,6 @@ class View:
                                ft.Container(self.dd_anno, width=250)],
                       alignment=ft.MainAxisAlignment.CENTER)
 
-        # Riga 2
         self.txt_out_squadre = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
         cont = ft.Container(self.txt_out_squadre, width=300, height=200, alignment=ft.alignment.top_left,
                             bgcolor=ft.Colors.SURFACE)
@@ -46,7 +39,6 @@ class View:
                       alignment=ft.MainAxisAlignment.CENTER,
                       vertical_alignment=ft.CrossAxisAlignment.END)
 
-        # Riga 3
         self.dd_squadra = ft.Dropdown(label="Squadra", width=200)
         self.pulsante_dettagli = ft.ElevatedButton(text="Dettagli", on_click=self.controller.handle_dettagli)
         self.pulsante_percorso = ft.ElevatedButton(text="Percorso", on_click=self.controller.handle_percorso)
@@ -60,10 +52,8 @@ class View:
 
         self.txt_risultato = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=300)
 
-        # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
 
-        # --- Layout della pagina ---
         self.page.add(
             self.toggle_cambia_tema,
 
@@ -81,7 +71,6 @@ class View:
         self.page.update()
 
     def cambia_tema(self, e):
-        """ Cambia tema scuro/chiaro """
         self.page.theme_mode = ft.ThemeMode.DARK if self.toggle_cambia_tema.value else ft.ThemeMode.LIGHT
         self.toggle_cambia_tema.label = "Tema scuro" if self.toggle_cambia_tema.value else "Tema chiaro"
         self.page.update()

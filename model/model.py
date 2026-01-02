@@ -14,7 +14,6 @@ class Model:
 
     def getTeamsByYear(self, year):
         self._nodes = DAO.getTeamsByYear(year)
-        # Creo mappa per recuperare velocemente le squadre
         self._idMap = {t.team_code: t for t in self._nodes}
         return self._nodes
 
@@ -25,16 +24,13 @@ class Model:
 
         self._grafo.add_nodes_from(self._nodes)
 
-        # Recupero mappa salari
         salary_map = DAO.getSalary(year)
 
-        # Doppio ciclo per creare archi
         for i in range(len(self._nodes)):
             for j in range(i + 1, len(self._nodes)):
                 t1 = self._nodes[i]
                 t2 = self._nodes[j]
 
-                # Somma salari (gestisce caso salario mancante mettendo 0)
                 s1 = salary_map.get(t1.team_code, 0)
                 s2 = salary_map.get(t2.team_code, 0)
 
@@ -64,14 +60,12 @@ class Model:
         self.peso_Max = 0
 
         parziale = [source_node]
-        # Inizializzo con un peso infinito per permettere il primo passo
         self.ricorsione(parziale, 0, float('inf'))
 
         return self.percorsoMax, self.peso_Max
 
 
     def ricorsione(self, parziale, peso_totale, ultimo_peso):
-        # Controllo se il percorso attuale è migliore di quello salvato
         if peso_totale > self.peso_Max:
             self.peso_Max = peso_totale
             self.percorsoMax = list(parziale)
@@ -79,12 +73,9 @@ class Model:
         last_node = parziale[-1]
         vicini = self.getSortedNeighbors(last_node)
 
-        # Filtro i vicini: devono rispettare il vincolo del peso decrescente
-        # e non devono essere già nel percorso
         vicini_ammissibili = [v for v in vicini if v[1] < ultimo_peso and v[0] not in parziale]
 
-        # Prendo solo i primi K tra quelli che rispettano i vincoli
-        K = 3
+        K = 2
         vicini_k = vicini_ammissibili[:K]
 
         for vicino, peso_arco in vicini_k:

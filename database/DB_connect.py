@@ -3,13 +3,6 @@ from mysql.connector import errorcode
 import pathlib
 
 class DBConnect:
-    """
-    Classe utilizzata per creare e gestire un pool di connessioni al database.
-    Implementa un metodo di classe che funge da factory per fornire connessioni
-    prese in prestito dal pool.
-    """
-
-    # Manteniamo il pool di connessioni come attributo di classe, non di istanza
     _pool_connessioni = None
 
     def __init__(self):
@@ -17,14 +10,6 @@ class DBConnect:
 
     @classmethod
     def get_connection(cls, nome_pool="mio_pool", dimensione_pool=3) -> mysql.connector.pooling.PooledMySQLConnection | None:
-        """
-        Metodo factory per ottenere una connessione dal pool.
-        Inizializza il pool se non esiste ancora.
-
-        :param nome_pool: nome del pool
-        :param dimensione_pool: numero di connessioni nel pool
-        :return: mysql.connector.connection oppure None in caso di errore di connessione
-        """
         if cls._pool_connessioni is None:
             try:
                 cls._pool_connessioni = mysql.connector.pooling.MySQLConnectionPool(

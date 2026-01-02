@@ -9,10 +9,6 @@ class Controller:
         self._model = model
 
     def popolaDropdown(self):
-        """
-        Questo metodo va chiamato DAL MAIN dopo view.load_interface().
-        Carica solo gli anni.
-        """
         years = self._model.get_all_years()
         self._view.dd_anno.options.clear()
 
@@ -22,17 +18,11 @@ class Controller:
         self._view.update()
 
     def read_anno(self, e):
-        """
-        Questo metodo è collegato all'evento on_change della tendina Anno.
-        Carica le squadre e aggiorna il testo.
-        """
         anno = self._view.dd_anno.value
         if anno is None:
             return
 
-
         squadre = self._model.getTeamsByYear(anno)
-
 
         self._view.dd_squadra.options.clear()
         for s in squadre:
@@ -79,7 +69,6 @@ class Controller:
         team_node = self._model._idMap.get(squadra_code)
         vicini = self._model.getSortedNeighbors(team_node)
 
-        # 3. Stampa dei risultati
         self._view.txt_risultato.controls.clear()
         self._view.txt_risultato.controls.append(ft.Text(f"Adiacenti alla squadra {squadra_code}:"))
 
@@ -99,7 +88,6 @@ class Controller:
 
             self._view.txt_risultato.controls.clear()
 
-            # print(f"Path trovato: {path}")
             if not path or len(path) <= 1:
                 self._view.txt_risultato.controls.append(ft.Text("Nessun percorso trovato con i vincoli specificati."))
                 self._view.update()
