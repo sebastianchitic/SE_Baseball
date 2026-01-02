@@ -76,7 +76,8 @@ class Controller:
             self._view.show_alert("Seleziona una squadra dalla tendina!")
             return
 
-        vicini = self._model.getSortedNeighbors(squadra_code)
+        team_node = self._model._idMap.get(squadra_code)
+        vicini = self._model.getSortedNeighbors(team_node)
 
         # 3. Stampa dei risultati
         self._view.txt_risultato.controls.clear()
@@ -93,19 +94,29 @@ class Controller:
             self._view.show_alert("Seleziona una squadra!")
             return
 
-        path, peso_totale = self._model.getPercorsoMax(squadra_code)
+        try:
+            path, peso_totale = self._model.getPercorsoMax(squadra_code)
 
-        self._view.txt_risultato.controls.clear()
-        self._view.txt_risultato.controls.append(ft.Text(f"Percorso ottimo trovato (Peso totale: {peso_totale}):"))
+            self._view.txt_risultato.controls.clear()
 
+            # print(f"Path trovato: {path}")
+            if not path or len(path) <= 1:
+                self._view.txt_risultato.controls.append(ft.Text("Nessun percorso trovato con i vincoli specificati."))
+                self._view.update()
+                return
 
-        for i in range(len(path) - 1):
-            n1 = path[i]
-            n2 = path[i + 1]
-            peso_arco = self._model._grafo[n1][n2]['weight']
-            self._view.txt_risultato.controls.append(ft.Text(f"{n1.name} -> {n2.name} ({peso_arco})"))
+            self._view.txt_risultato.controls.append(ft.Text(f"Percorso ottimo trovato (Peso totale: {peso_totale}):"))
 
-        if path:
-            self._view.txt_risultato.controls.append(ft.Text(f"Arrivo: {path[-1].name}"))
+            for i in range(len(path) - 1):
+                n1 = path[i]
+                n2 = path[i + 1]
+                peso_arco = self._model._grafo[n1][n2]['weight']
+                self._view.txt_risultato.controls.append(ft.Text(f"{n1.name} -> {n2.name} ({round(peso_arco, 2)})"))
 
-        self._view.update()
+            if path:
+                self._view.txt_risultato.controls.append(ft.Text(f"Arrivo: {path[-1].name}"))
+
+            self._view.update()
+        except Exception as ex:
+            print(f"Errore in handle_percorso: {ex}")
+            self._view.show_alert(f"Errore durante il calcolo del percorso: {ex}")

@@ -43,9 +43,7 @@ class Model:
     def getGraphDetails(self):
         return self._grafo.number_of_nodes(), self._grafo.number_of_edges()
 
-    def getSortedNeighbors(self, team_code):
-        # Cerco il nodo oggetto partendo dalla stringa
-        team_node = self._idMap.get(team_code)
+    def getSortedNeighbors(self, team_node):
         if team_node is None:
             return []
 
@@ -66,30 +64,33 @@ class Model:
         self.peso_Max = 0
 
         parziale = [source_node]
-        self.ricorsione(parziale, 0, 9999999)
+        # Inizializzo con un peso infinito per permettere il primo passo
+        self.ricorsione(parziale, 0, float('inf'))
 
         return self.percorsoMax, self.peso_Max
 
 
     def ricorsione(self, parziale, peso_totale, ultimo_peso):
+        # Controllo se il percorso attuale è migliore di quello salvato
         if peso_totale > self.peso_Max:
-            self._bestScore = peso_totale
-            self._bestPath = list(parziale)
+            self.peso_Max = peso_totale
+            self.percorsoMax = list(parziale)
 
         last_node = parziale[-1]
+        vicini = self.getSortedNeighbors(last_node)
 
-        vicini = self.getSortedNeighbors(last_node.team_code)
+        # Filtro i vicini: devono rispettare il vincolo del peso decrescente
+        # e non devono essere già nel percorso
+        vicini_ammissibili = [v for v in vicini if v[1] < ultimo_peso and v[0] not in parziale]
 
+        # Prendo solo i primi K tra quelli che rispettano i vincoli
         K = 3
-        vicini_k = vicini[:K]
+        vicini_k = vicini_ammissibili[:K]
 
         for vicino, peso_arco in vicini_k:
-            if vicino not in parziale:
-                if peso_arco < ultimo_peso:
-                    parziale.append(vicino)
-                    self.ricorsione(parziale, peso_totale + peso_arco, peso_arco)
-
-                    parziale.pop()
+            parziale.append(vicino)
+            self.ricorsione(parziale, peso_totale + peso_arco, peso_arco)
+            parziale.pop()
 
 
 

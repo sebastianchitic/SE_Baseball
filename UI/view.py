@@ -58,7 +58,7 @@ class View:
         for i in range(0,200):
             self.txt_out_squadre.controls.append(ft.Text(f"Squadra {i}"))
 
-        self.txt_risultato = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+        self.txt_risultato = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=300)
 
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
